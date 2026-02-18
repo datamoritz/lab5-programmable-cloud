@@ -47,17 +47,17 @@ def main():
 
     vm2_startup = read_text("vm2-startup-script.sh")
 
-    # firewall rule for 5000 (idempotent-ish)
-    fw_name = "allow-5000"
+    # firewall rule for 5001 (idempotent-ish)
+    fw_name = "allow-5001"
     try:
         compute.firewalls().get(project=project, firewall=fw_name).execute()
     except Exception:
         firewall_body = {
             "name": fw_name,
             "direction": "INGRESS",
-            "allowed": [{"IPProtocol": "tcp", "ports": ["5000"]}],
+            "allowed": [{"IPProtocol": "tcp", "ports": ["5001"]}],
             "sourceRanges": ["0.0.0.0/0"],
-            "targetTags": ["allow-5000"],
+            "targetTags": ["allow-5001"],
         }
         op = compute.firewalls().insert(project=project, body=firewall_body).execute()
         # global op
@@ -74,7 +74,7 @@ def main():
     config = {
         "name": VM2_NAME,
         "machineType": MACHINE_TYPE,
-        "tags": {"items": ["allow-5000"]},
+        "tags": {"items": ["allow-5001"]},
         "disks": [
             {
                 "boot": True,
@@ -102,7 +102,7 @@ def main():
         .get("natIP", "<no external ip>")
     )
     print(f"[OK] VM2 external IP: {ip}")
-    print(f"Visit: http://{ip}:5000")
+    print(f"Visit: http://{ip}:5001")
 
 
 if __name__ == "__main__":
